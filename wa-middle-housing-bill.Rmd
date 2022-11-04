@@ -1,0 +1,55 @@
+---
+title: "Washington Middle Housing Bill Dashboard (2023)"
+output: 
+  flexdashboard::flex_dashboard:
+    theme:
+      version: 4
+      base_font:
+        google: Open Sans
+      code_font:
+        google: Fira Mono
+    orientation: rows
+    vertical_layout: fill
+---
+
+```{r setup, include=FALSE}
+library(flexdashboard)
+# Install thematic and un-comment for themed static plots (i.e., ggplot2)
+thematic::thematic_rmd()
+
+library(shiny) 
+library(plotly)
+library(leaflet)
+library(tidyverse)
+library(sf)
+# library(highcharter)
+
+```
+
+Sidebar {.sidebar}
+=======================================================================
+
+Add a few input selectors here.
+
+First Draft
+=======================================================================
+
+
+Row {}
+-----------------------------------------------------------------------
+
+### Chart C
+
+```{r}
+ggplot2::qplot(mtcars$mpg)
+```
+
+### Chart D
+
+```{r}
+ggplot(mtcars) +
+  aes(x = mpg, y = disp, color = gear) +
+  geom_point() +
+  scale_color_viridis_b()
+```
+
