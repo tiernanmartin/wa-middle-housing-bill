@@ -3,14 +3,13 @@ title: "Washington Middle Housing Bill Dashboard (2023)"
 output: 
   flexdashboard::flex_dashboard:
     theme:
-      version: 4
-      base_font:
-        google: Open Sans
-      code_font:
-        google: Fira Mono
-    orientation: rows
+      version: 5 
+      bootswatch: default
+    orientation: columns
     vertical_layout: fill
+runtime: shiny
 ---
+ 
 
 ```{r setup, include=FALSE}
 library(flexdashboard)
@@ -22,34 +21,90 @@ library(plotly)
 library(leaflet)
 library(tidyverse)
 library(sf)
+library(ragg)
 # library(highcharter)
+
+options(shiny.useragg = TRUE)
 
 ```
 
 Sidebar {.sidebar}
 =======================================================================
 
-Add a few input selectors here.
+<br>
 
-First Draft
+```{r}
+tags$br()
+# Define inputs
+selectInput('model_name', 
+            label = 'Select model:', 
+            choices = rownames(mtcars), 
+            selected = rownames(mtcars)[1])
+
+sliderInput('mpg', 
+            label = 'MPG', 
+            min = round(min(mtcars$mpg),1e-2), 
+            max = round(max(mtcars$mpg),1e-2), 
+            value = round(mean(mtcars$mpg),1e-2),  
+            step = 1)
+
+sliderInput('sampleSize', 'Sample Size', min=1, max=nrow(diamonds),
+            value=min(1000, nrow(diamonds)), step=500, round=0)
+```
+
+First Draft 
 =======================================================================
 
+Column {data-width=600}
+-----------------------------------------------------------------------
 
-Row {}
+### Map
+
+```{r}
+leaflet::renderLeaflet(
+  leaflet::leaflet() |> addProviderTiles('CartoDB.Positron')
+  )
+```
+
+
+Column {data-width=200}
 -----------------------------------------------------------------------
 
 ### Chart C
 
 ```{r}
-ggplot2::qplot(mtcars$mpg)
+renderPlot(ggplot2::qplot(mtcars$mpg))
 ```
 
 ### Chart D
 
 ```{r}
-ggplot(mtcars) +
-  aes(x = mpg, y = disp, color = gear) +
-  geom_point() +
-  scale_color_viridis_b()
+renderPlot(ggplot(mtcars) +
+  aes(x = mpg, y = disp, color = gear, size = gear) +
+  geom_point(alpha = .75)) 
 ```
 
+
+
+Column {data-width=200}
+-----------------------------------------------------------------------
+
+### Chart E
+
+```{r}
+renderPlot(ggplot2::qplot(mtcars$mpg))
+```
+
+### Chart F
+
+```{r}
+renderPlot(ggplot(mtcars) +
+  aes(x = mpg, y = disp, color = gear, size = gear) +
+  geom_point(alpha = .75)) 
+```
+
+
+About
+===========================
+<br>
+This is the about page.
